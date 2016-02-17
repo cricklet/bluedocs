@@ -1,0 +1,87 @@
+<html>
+	<head>
+		<!-- Helpful libraries -->
+		<script src="http://underscorejs.org/underscore.js"></script>
+		
+		<!-- Firebase -->
+		<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+
+		<!-- CodeMirror -->
+		<script src="./libs/CodeMirror/lib/codemirror.js"></script>
+		<link rel="stylesheet" href="./libs/CodeMirror/lib/codemirror.css"/>
+		
+		<script src="./libs/CodeMirror/addon/mode/overlay.js"></script>
+
+		<script src="./libs/CodeMirror/mode/javascript/javascript.js"></script>
+		<script src="./libs/CodeMirror/mode/python/python.js"></script>
+		<script src="./libs/CodeMirror/mode/markdown/markdown.js"></script>
+		<script src="./libs/CodeMirror/mode/gfm/gfm.js"></script>
+		<script src="./libs/CodeMirror/mode/css/css.js"></script>
+		<script src="./libs/CodeMirror/mode/htmlmixed/htmlmixed.js"></script>
+		<script src="./libs/CodeMirror/mode/jsx/jsx.js"></script>
+		<script src="./libs/CodeMirror/addon/mode/simple.js"></script>
+
+		<script src="./blue-markdown.js"></script>
+
+		<!-- Firepad -->
+		<link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.3.0/firepad.css" />
+		<script src="https://cdn.firebase.com/libs/firepad/1.3.0/firepad.js"></script>
+
+		<style>
+		html {
+			height: 100%;
+		}
+		body {
+			margin: 0;
+			height: 100%;
+			position: relative;
+		}
+		#firepad-container {
+			width: 100%;
+			height: 100%;
+		}
+
+		.CodeMirror {
+			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif
+		}
+
+		.cm-code-block {
+			font-family: "Lucida Console", monospace
+		}
+
+		.cm-header-1 {
+			font-size: 200%
+		}
+		.cm-header-2 {
+			font-size: 150%
+		}
+		.cm-header-3 {
+			font-size: 125%
+		}
+		.cm-header-4 {
+			font-size: 115%
+		}
+		</style>
+	</head>
+
+	<body>
+		<div id="firepad"></div>
+
+		<!-- JS Entrypoint -->
+		<script>
+		var firepadRef = new Firebase('https://bluedocs.firebaseio.com/');
+		var codeMirror = CodeMirror(
+			document.getElementById('firepad'),
+			{
+				lineWrapping: true,
+				mode: {
+					name: 'blue-markdown',
+				}
+			}
+		);
+		var firepad = Firepad.fromCodeMirror(
+			firepadRef, codeMirror,	{ defaultText: 'Hello, World!' }
+		);
+		</script>
+	</body>
+</html>
