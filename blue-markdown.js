@@ -5,23 +5,6 @@
 
 // this means using simple-mode's easy meta syntax for nesting modes. +1
 
-CodeMirror.defineSimpleMode("blue-markdown-link", {
-	start: [
-		{regex: /\[/, next: "text"}
-	],
-	text: [
-		{regex: /\]\(/, next: "href"},
-		{regex: /./, token: "link-text"}
-	],
-	href: [
-		{regex: /\]\(/, next: "end"},
-		{regex: /./, token: "link-href"}
-	],
-	end: [
-		{regex: /\)/, next: "start"}
-	]
-});
-
 CodeMirror.defineSimpleMode("blue-markdown-styles", {
 	start: [
 		{regex: /# /, token: "header-tag line-header-1", sol: true},
@@ -29,98 +12,100 @@ CodeMirror.defineSimpleMode("blue-markdown-styles", {
 		{regex: /### /, token: "header-tag line-header-3", sol: true},
 		{regex: /#### /, token: "header-tag line-header-4", sol: true},
 		{regex: /`.*`/, token: "code-quoted"},
-		{regex: / +- /, token: "bullet", sol: true},
-		{regex: / +/, token: "indent", sol: true},
-		{regex: /\[.*\]/, token: "meta", mode: {spec: "blue-markdown-link", end: /\(.*\)/}}
+		{regex: /\s+- /, token: "bullet", sol: true},
+		{regex: /\s+[1-9]+\. /, token: "bullet", sol: true},
+		{regex: /\s+/, token: "indent", sol: true}
 	]
 });
 
-/* mainMode: the default mode
- * nestedDatas: [
- *  {
+/* defaultMode: the default mode
+ * innerHighlighters: [
+ *  { // Switch into inner mode after isStart and before isEnd.
  *    mode: <mode>,
- *    isStreamStart: <func(stream)>,
- *    isStreamEnd:   <func(stream)>
+ *    isStart: <func(stream)>,
+ *    isEnd:   <func(stream)>,
+ *    inclusive: false
  *  }
- * ]
  */
 function multiplexer(
-	mainMode,
-	nestedDatas
+	defaultMode,
+	innerHighlighters
 ) { return {
 	startState: function() {
 		return {
-			currentNestedData: null,
-			currentNestedState: null,
-			mainState: CodeMirror.startState(mainMode)
+			currentHighlighter: null,
+			currentState: null,
+			defaultState: CodeMirror.startState(defaultMode)
 		};
 	},
 	copyState: function(s) {
 		return {
-			currentNestedData: s.currentNestedData,
-			currentNestedState: s.currentNestedState,
-			mainState: s.mainState
+			currentHighlighter: s.currentHighlighter,
+			currentState: s.currentState,
+			defaultState: s.defaultState
 		};
 	},
 	token: function(stream, state) {
-		// SWITCH INTO a nested state
-		if (!state.currentNestedData) {
-			var newNestedData = _.find(nestedDatas, function (nestedData) {
-				return nestedData.isStreamStart(stream);
+		// SWITCH INTO a inner state
+		if (!state.currentHighlighter) {
+			var highlighter = _.find(innerHighlighters, function (innerHighlighter) {
+				return innerHighlighter.isStart(stream);
 			});
 
-			if (newNestedData) {
-				state.currentNestedData = newNestedData;
-				state.currentNestedState = CodeMirror.startState(newNestedData.mode)
-				return nestedMode.nestedStartToken;
+			if (highlighter) {
+				state.currentHighlighter = highlighter;
+				state.currentState = CodeMirror.startState(highlighter.mode)
+				return state.currentHighlighter.innerStartToken;
 			}
 		}
 
-		// SWITCH OUT of a nested state
-		if (state.currentNestedData) {
-			if (state.currentNestedData.isStreamEnd(stream)) {
-				state.currentNestedData = null;
-				state.currentNestedState = null;
-				return nestedMode.nestedEndToken;
+		// SWITCH OUT of a inner state
+		if (state.currentHighlighter) {
+			if (state.currentHighlighter.isEnd(stream)) {
+				var endToken = state.currentHighlighter.innerEndToken;
+				state.currentHighlighter = null;
+				state.currentState = null;
+				return endToken;
 			}
 		}
 
-		// STAY in nested state
-		if (state.currentNestedData) {
-			var nestedMode = state.currentNestedData.mode;
-			var token = nestedMode.token(stream, state.currentNestedState);
-			return token + ' ' + nestedMode.nestedToken;
+		// STAY in inner state
+		if (state.currentHighlighter) {
+			var token = state.currentHighlighter.mode.token(stream, state.currentState);
+			return token + ' ' + state.currentHighlighter.innerToken;
 		}
 
 		// STAY in outer state
-		return mainMode.token(stream, state.mainState);
+		return defaultMode.token(stream, state.defaultState);
 	}
 }};
+
 
 
 CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 	function generateNestedModeData(lang) {
 		return {
 			mode: CodeMirror.getMode(config, lang),
-			isStreamStart: function (stream) {
+			isStart: function (stream) {
 				var re = new RegExp("\\s*```" + lang + "");
 				return stream.sol() && stream.match(re) && stream.eol();
 			},
-			isStreamEnd: function (stream) {
+			isEnd: function (stream) {
 				return stream.sol() && stream.match(/\s*```/) && stream.eol();
 			},
-			nestedStartToken: 'line-code line-code-start',
-			nestedToken: 'line-code',
-			nestedEndToken: 'line-code line-code-end'
+			innerStartToken: 'line-code line-code-start',
+			innerToken: 'line-code',
+			innerEndToken: 'line-code line-code-end',
+			inclusive: false
 		}
 	}
 
 	return multiplexer(
  		CodeMirror.getMode(config, "blue-markdown-styles"),
  		[
-			generateNestedModeData('javascript'),
+			// generateNestedModeData('javascript'),
 			generateNestedModeData('python'),
-			generateNestedModeData('html')
+			// generateNestedModeData('html')
 		]
  	);
 });

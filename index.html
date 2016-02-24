@@ -77,6 +77,10 @@
 		.cm-indent {
 			font-family: "Lucida Console", monospace;
 		}
+		.cm-indent .cm-tab {
+			display: inherit!important;
+			// fixes bug with inline-none and custom indenting
+		}
 		.cm-bullet {
 			font-family: "Lucida Console", monospace;
 			color: #5cc;
@@ -138,17 +142,12 @@
 			var text = line.text;
 			var unindentedText = text.trimLeft();
 
-			console.log(text);
-			console.log(unindentedText);
-
 			var columns = 0;
 			columns += CodeMirror.countColumn(line.text, null, codeMirror.getOption("tabSize"));
-			console.log(columns);
-
 			if (unindentedText.startsWith("- ")) { columns += 2; }
-			console.log(columns);
 
 			var off = columns * charWidth;
+			// Remove indent & add padding.
 			elt.style.textIndent = "-" + off + "px";
 			elt.style.paddingLeft = (basePadding + off) + "px";
 		});
