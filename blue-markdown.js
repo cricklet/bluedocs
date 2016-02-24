@@ -5,6 +5,23 @@
 
 // this means using simple-mode's easy meta syntax for nesting modes. +1
 
+CodeMirror.defineSimpleMode("blue-markdown-link", {
+	start: [
+		{regex: /\[/, next: "text"}
+	],
+	text: [
+		{regex: /\]\(/, next: "href"},
+		{regex: /./, token: "link-text"}
+	],
+	href: [
+		{regex: /\]\(/, next: "end"},
+		{regex: /./, token: "link-href"}
+	],
+	end: [
+		{regex: /\)/, next: "start"}
+	]
+});
+
 CodeMirror.defineSimpleMode("blue-markdown-styles", {
 	start: [
 		{regex: /# /, token: "header-tag line-header-1", sol: true},
@@ -14,6 +31,7 @@ CodeMirror.defineSimpleMode("blue-markdown-styles", {
 		{regex: /`.*`/, token: "code-quoted"},
 		{regex: / +- /, token: "bullet", sol: true},
 		{regex: / +/, token: "indent", sol: true},
+		{regex: /\[.*\]/, token: "meta", mode: {spec: "blue-markdown-link", end: /\(.*\)/}}
 	]
 });
 
@@ -54,7 +72,7 @@ function multiplexer(
 			if (newNestedData) {
 				state.currentNestedData = newNestedData;
 				state.currentNestedState = CodeMirror.startState(newNestedData.mode)
-				return 'line-code line-code-start';
+				return nestedMode.nestedStartToken;
 			}
 		}
 
@@ -63,7 +81,7 @@ function multiplexer(
 			if (state.currentNestedData.isStreamEnd(stream)) {
 				state.currentNestedData = null;
 				state.currentNestedState = null;
-				return 'line-code line-code-end';
+				return nestedMode.nestedEndToken;
 			}
 		}
 
@@ -71,7 +89,7 @@ function multiplexer(
 		if (state.currentNestedData) {
 			var nestedMode = state.currentNestedData.mode;
 			var token = nestedMode.token(stream, state.currentNestedState);
-			return token + ' line-code';
+			return token + ' ' + nestedMode.nestedToken;
 		}
 
 		// STAY in outer state
@@ -90,7 +108,10 @@ CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 			},
 			isStreamEnd: function (stream) {
 				return stream.sol() && stream.match(/\s*```/) && stream.eol();
-			}
+			},
+			nestedStartToken: 'line-code line-code-start',
+			nestedToken: 'line-code',
+			nestedEndToken: 'line-code line-code-end'
 		}
 	}
 
