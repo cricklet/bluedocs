@@ -2,14 +2,14 @@
 	<head>
 		<!-- Helpful libraries -->
 		<script src="http://underscorejs.org/underscore.js"></script>
-		
+
 		<!-- Firebase -->
 		<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
 
 		<!-- CodeMirror -->
 		<script src="./libs/CodeMirror/lib/codemirror.js"></script>
 		<link rel="stylesheet" href="./libs/CodeMirror/lib/codemirror.css"/>
-		
+
 		<script src="./libs/CodeMirror/addon/mode/overlay.js"></script>
 
 		<script src="./libs/CodeMirror/mode/javascript/javascript.js"></script>
@@ -20,10 +20,8 @@
 		<script src="./libs/CodeMirror/mode/htmlmixed/htmlmixed.js"></script>
 		<script src="./libs/CodeMirror/mode/jsx/jsx.js"></script>
 		<script src="./libs/CodeMirror/addon/mode/simple.js"></script>
-		<!-- script src="./libs/CodeMirror/addon/mode/multiplex.js"></script -->
 
 		<script src="./blue-markdown.js"></script>
-		<script src="./multiplexer.js"></script>
 
 		<!-- Firepad -->
 		<link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.3.0/firepad.css" />
@@ -35,7 +33,6 @@
 		}
 		body {
 			margin: 0;
-			padding: 32px;
 			height: 100%;
 			position: relative;
 		}
@@ -48,7 +45,15 @@
 		}
 
 		.CodeMirror {
-			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif
+			font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+		}
+
+		.CodeMirror-line:first-child {
+			margin-top: 32px;
+		}
+
+		.CodeMirror-line:last-child {
+			margin-bottom: 32px;
 		}
 
 		.cm-code {
@@ -57,7 +62,6 @@
 
 		.code.CodeMirror-line {
 			font-family: "Lucida Console", monospace;
-			/*background: #eee;*/
 		}
 
 		.code-start.CodeMirror-line {
@@ -70,23 +74,34 @@
 			padding-top: 0.4em;
 		}
 
-		.bullet.CodeMirror-line {
+		.cm-indent {
+			font-family: "Lucida Console", monospace;
+		}
+		.cm-bullet {
+			font-family: "Lucida Console", monospace;
+			color: #5cc;
 		}
 
-		.indent.CodeMirror-line {
+		.cm-header-tag {
+			color: #bbb;
 		}
 
-		.cm-header-1 {
-			font-size: 200%
+		.cm-code-quoted {
+			font-family: "Lucida Console", monospace;
+			color: #888;
 		}
-		.cm-header-2 {
-			font-size: 150%
+
+		.header-1.CodeMirror-line {
+			font-size: 175%;
 		}
-		.cm-header-3 {
-			font-size: 125%
+		.header-2.CodeMirror-line {
+			font-size: 140%
 		}
-		.cm-header-4 {
-			font-size: 115%
+		.header-3.CodeMirror-line {
+			font-size: 120%
+		}
+		.header-4.CodeMirror-line {
+			font-size: 110%
 		}
 		</style>
 	</head>
@@ -109,6 +124,28 @@
 		var firepad = Firepad.fromCodeMirror(
 			firepadRef, codeMirror,	{ defaultText: 'Hello, World!' }
 		);
+
+		var charWidth = codeMirror.defaultCharWidth(), basePadding = 0;
+		codeMirror.on("renderLine", function(codeMirror, line, elt) {
+			var text = line.text;
+			var unindentedText = text.trimLeft();
+
+			console.log(text);
+			console.log(unindentedText);
+
+			var columns = 0;
+			columns += CodeMirror.countColumn(line.text, null, codeMirror.getOption("tabSize"));
+			console.log(columns);
+
+			if (unindentedText.startsWith("- ")) { columns += 2; }
+			console.log(columns);
+
+			var off = columns * charWidth;
+			elt.style.textIndent = "-" + off + "px";
+			elt.style.paddingLeft = (basePadding + off) + "px";
+		});
+		codeMirror.refresh();
+
 		</script>
 	</body>
 </html>

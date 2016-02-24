@@ -7,12 +7,13 @@
 
 CodeMirror.defineSimpleMode("blue-markdown-styles", {
 	start: [
-		{regex: /# .+/, token: "header-1", sol: true},
-		{regex: /## .+/, token: "header-2", sol: true},
-		{regex: /### .+/, token: "header-3", sol: true},
-		{regex: /#### .+/, token: "header-4", sol: true},
-		{regex: /  - .+/, token: "bullet", sol: true},
-		{regex: /  .+/, token: "indent", sol: true}
+		{regex: /# /, token: "header-tag line-header-1", sol: true},
+		{regex: /## /, token: "header-tag line-header-2", sol: true},
+		{regex: /### /, token: "header-tag line-header-3", sol: true},
+		{regex: /#### /, token: "header-tag line-header-4", sol: true},
+		{regex: /`.*`/, token: "code-quoted"},
+		{regex: / +- /, token: "bullet", sol: true},
+		{regex: / +/, token: "indent", sol: true},
 	]
 });
 
@@ -92,7 +93,7 @@ CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 			}
 		}
 	}
-	
+
 	return multiplexer(
  		CodeMirror.getMode(config, "blue-markdown-styles"),
  		[
