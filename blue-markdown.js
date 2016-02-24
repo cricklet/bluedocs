@@ -11,64 +11,94 @@ CodeMirror.defineSimpleMode("blue-markdown-styles", {
 		{regex: /## .+/, token: "header-2", sol: true},
 		{regex: /### .+/, token: "header-3", sol: true},
 		{regex: /#### .+/, token: "header-4", sol: true},
-		{regex: /```.+/, token: "code-block",
-		 next: "code_block", sol: true, eol: true}
-	],
-	code_block: [
-		{regex: /```/, token: "code-block", next: "start", sol: true, eol: true},
-		{regex: /.*/, token: "code-block"}
-	],
+		{regex: /  - .+/, token: "bullet", sol: true},
+		{regex: /  .+/, token: "indent", sol: true}
+	]
 });
 
+/* mainMode: the default mode
+ * nestedDatas: [
+ *  {
+ *    mode: <mode>,
+ *    isStreamStart: <func(stream)>,
+ *    isStreamEnd:   <func(stream)>
+ *  }
+ * ]
+ */
+function multiplexer(
+	mainMode,
+	nestedDatas
+) { return {
+	startState: function() {
+		return {
+			currentNestedData: null,
+			currentNestedState: null,
+			mainState: CodeMirror.startState(mainMode)
+		};
+	},
+	copyState: function(s) {
+		return {
+			currentNestedData: s.currentNestedData,
+			currentNestedState: s.currentNestedState,
+			mainState: s.mainState
+		};
+	},
+	token: function(stream, state) {
+		// SWITCH INTO a nested state
+		if (!state.currentNestedData) {
+			var newNestedData = _.find(nestedDatas, function (nestedData) {
+				return nestedData.isStreamStart(stream);
+			});
 
-var codeOverlay = {
-  startState: function() {
-    return {
-      codeBlock: false,
-			codeLang: ''
-    };
-  },
-  copyState: function(s) {
-    return {
-      codeBlock: s.codeBlock,
-			codeLang: s.codeLang
-    };
-  },
-  token: function(stream, state) {
-		if (state.codeBlock) {
-			var isEnd = stream.sol() && stream.match(/```/) && stream.eol();
-			if (isEnd) {
-				state.codeBlock = false;
-				state.codeLang = null;
-				return null;
+			if (newNestedData) {
+				state.currentNestedData = newNestedData;
+				state.currentNestedState = CodeMirror.startState(newNestedData.mode)
+				return 'line-code line-code-start';
 			}
 		}
 
-		if (state.codeBlock) {
-			stream.skipToEnd();
-			return null;
+		// SWITCH OUT of a nested state
+		if (state.currentNestedData) {
+			if (state.currentNestedData.isStreamEnd(stream)) {
+				state.currentNestedData = null;
+				state.currentNestedState = null;
+				return 'line-code line-code-end';
+			}
 		}
-		
-		if (!state.codeBlock) {
-			var isBeginning = stream.sol() && stream.match(/```.+/) && stream.eol();
-			state.codeBlock = true;
-			state.codeLang = stream.current().substr(3);
-			return null;
+
+		// STAY in nested state
+		if (state.currentNestedData) {
+			var nestedMode = state.currentNestedData.mode;
+			var token = nestedMode.token(stream, state.currentNestedState);
+			return token + ' line-code';
 		}
-		
-		stream.next();
-		return null;
-  },
-	innerMode: function (state) {
-		console.log(state.codeLang);
-		return {state: {}, mode: state.codeLang};
+
+		// STAY in outer state
+		return mainMode.token(stream, state.mainState);
 	}
-};
+}};
 
 
 CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
-	return CodeMirror.overlayMode(
-		CodeMirror.getMode(config, "blue-markdown-styles"),
-		codeOverlay
-	);
+	function generateNestedModeData(lang) {
+		return {
+			mode: CodeMirror.getMode(config, lang),
+			isStreamStart: function (stream) {
+				var re = new RegExp("\\s*```" + lang + "");
+				return stream.sol() && stream.match(re) && stream.eol();
+			},
+			isStreamEnd: function (stream) {
+				return stream.sol() && stream.match(/\s*```/) && stream.eol();
+			}
+		}
+	}
+	
+	return multiplexer(
+ 		CodeMirror.getMode(config, "blue-markdown-styles"),
+ 		[
+			generateNestedModeData('javascript'),
+			generateNestedModeData('python'),
+			generateNestedModeData('html')
+		]
+ 	);
 });
