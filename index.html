@@ -146,6 +146,8 @@
 			firepadRef, codeMirror,	{ defaultText: 'Hello, World!' }
 		);
 
+		// Hacky hacky hacky. This indents wrapped lines properly.
+		// Taken from: https://codemirror.net/demo/indentwrap.html
 		var charWidth = codeMirror.defaultCharWidth(), basePadding = 0;
 		codeMirror.on("renderLine", function(codeMirror, line, elt) {
 			var text = line.text;
