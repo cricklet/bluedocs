@@ -2,6 +2,7 @@
 	<head>
 		<!-- Helpful libraries -->
 		<script src="http://underscorejs.org/underscore.js"></script>
+		<script src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
 
 		<!-- Firebase -->
 		<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
@@ -77,7 +78,7 @@
 		.cm-indent {
 			font-family: "Lucida Console", monospace;
 		}
-		.cm-indent .cm-tab {
+		.cm-tab {
 			display: inherit!important;
 			// fixes bug with inline-none and custom indenting
 		}
@@ -90,8 +91,16 @@
 			color: #5cc !important;
 		}
 
-		.cm-link {
+		.cm-link-text {
 			color: #5cc !important;
+		}
+
+		.cm-link-href {
+			color: #5cc !important;
+		}
+
+		.cm-link-tag {
+			color: #bbb;
 		}
 
 		.cm-header-tag {
@@ -152,6 +161,10 @@
 			elt.style.paddingLeft = (basePadding + off) + "px";
 		});
 		codeMirror.refresh();
+
+		$('.cm-link-href').click(function ($el) {
+			debugger;
+		});
 
 		</script>
 	</body>

@@ -5,12 +5,15 @@
 
 // this means using simple-mode's easy meta syntax for nesting modes. +1
 
+var LINK_REGEX = /\[[^\[\]\(\)]+\]\([^\[\]\(\)]+\)/
+
 CodeMirror.defineSimpleMode("blue-markdown-styles", {
 	start: [
 		{regex: /# /, token: "header-tag line-header-1", sol: true},
 		{regex: /## /, token: "header-tag line-header-2", sol: true},
 		{regex: /### /, token: "header-tag line-header-3", sol: true},
 		{regex: /#### /, token: "header-tag line-header-4", sol: true},
+		{regex: LINK_REGEX, token: ""},
 		{regex: /`.*`/, token: "code-quoted"},
 		{regex: /\s+- /, token: "bullet", sol: true},
 		{regex: /\s+[1-9]+\. /, token: "bullet", sol: true},
@@ -18,16 +21,67 @@ CodeMirror.defineSimpleMode("blue-markdown-styles", {
 	]
 });
 
+LINK_TEXT_OPEN  = 6;
+LINK_TEXT       = 5;
+LINK_TEXT_CLOSE = 4;
+LINK_HREF_OPEN  = 3;
+LINK_HREF       = 2;
+LINK_HREF_CLOSE = 1;
+
+function linkHighlightMode() { return {
+	startState: function() {
+		return {
+			status: 0
+		};
+	},
+	copyState: function(s) {
+		return {
+			status: s.status
+		};
+	},
+	token: function(stream, state) {
+		var returnToken = '';
+
+		if (state.status == LINK_TEXT) {
+			stream.match(/[^\[\]\(\)]+/);
+			returnToken += 'link-text';
+			
+		} else if (state.status == LINK_HREF) {
+			stream.match(/[^\[\]\(\)]+/);
+			returnToken += 'link-href';
+
+		} else if (state.status == LINK_TEXT_CLOSE ||
+							 state.status == LINK_HREF_OPEN ||
+							 state.status == LINK_HREF_CLOSE) {
+			// Increment once
+			stream.next();
+			returnToken += 'link-tag';
+
+		} else if(stream.match(LINK_REGEX)) {
+			state.status = LINK_TEXT_OPEN;
+			stream.backUp(stream.current().length);
+
+			// Increment only the first paren;
+			stream.next();
+			returnToken += 'link-tag';
+		}
+
+		state.status --;
+
+		return returnToken;
+	}
+}}
+
 /* defaultMode: the default mode
  * innerHighlighters: [
  *  { // Switch into inner mode after isStart and before isEnd.
  *    mode: <mode>,
  *    isStart: <func(stream)>,
  *    isEnd:   <func(stream)>,
- *    inclusive: false
  *  }
+ * ]
  */
-function multiplexer(
+function multiplexerMode(
 	defaultMode,
 	innerHighlighters
 ) { return {
@@ -80,10 +134,67 @@ function multiplexer(
 	}
 }};
 
+function genZero () {return 0;}
+function genEmpty () {return '';}
+function decrement (x) {return x - 1;}
 
+function simulModes(modes) { return {
+	startState: function () {
+		return {
+			states: _.map(modes, function (mode) {
+				return CodeMirror.startState(mode);
+			}),
+			countdowns: _.map(modes, genZero),
+			tokens: _.map(modes, genEmpty)
+		};
+	},
+	copyState: function(s) {
+		return {
+			states: _.map(modes, function (mode, index) {
+				var state = s.states[index];
+				return mode.copyState(state);
+			}),
+			countdowns: _.clone(s.countdowns),
+			tokens:     _.clone(s.tokens)
+		};
+	},
+	token: function(stream, state) {
+		var returnTokens = '';
+
+		_.each(modes, function (mode, index) {
+			var modeState     = state.states[index];
+			var modeCountdown = state.countdowns[index];
+			var modeToken     = state.tokens[index];
+			
+			if (modeCountdown > 0) {
+				// Add the previous token if a countdown is going on.
+				returnTokens += ' ' + state.tokens[index];
+			} else {
+				// Otherwise, feed the stream to the mode.
+				modeToken = mode.token(stream, modeState);
+				modeCountdown = stream.current().length;
+
+				returnTokens += ' ' + modeToken;
+				stream.backUp(modeCountdown);
+			}
+
+			state.states[index]     = modeState;
+			state.countdowns[index] = modeCountdown;
+			state.tokens[index]     = modeToken;
+		});
+
+		// Decrement countdowns
+		state.countdowns = _.map(state.countdowns, decrement);
+
+		// Increment stream by one!
+		stream.next();
+		
+		return returnTokens;
+	}
+}}
 
 CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
-	function generateNestedModeData(lang) {
+	function generateCodeHighlighter(lang) {
 		return {
 			mode: CodeMirror.getMode(config, lang),
 			isStart: function (stream) {
@@ -95,17 +206,19 @@ CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 			},
 			innerStartToken: 'line-code line-code-start',
 			innerToken: 'line-code',
-			innerEndToken: 'line-code line-code-end',
-			inclusive: false
+			innerEndToken: 'line-code line-code-end'
 		}
 	}
 
-	return multiplexer(
- 		CodeMirror.getMode(config, "blue-markdown-styles"),
- 		[
-			// generateNestedModeData('javascript'),
-			generateNestedModeData('python'),
-			// generateNestedModeData('html')
-		]
- 	);
+	return simulModes([
+		multiplexerMode(
+ 			CodeMirror.getMode(config, "blue-markdown-styles"),
+ 			[
+				generateCodeHighlighter('javascript'),
+				generateCodeHighlighter('python'),
+				generateCodeHighlighter('html')
+			]
+		),
+		linkHighlightMode()
+	]);
 });
