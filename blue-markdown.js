@@ -202,7 +202,7 @@ function simulModes(modes) {
 
 function generateCodeHighlighter(lang) {
 	return {
-		mode: CodeMirror.getMode(config, lang),
+		mode: CodeMirror.getMode({}, lang),
 		isStart: function (stream) {
 			var re = new RegExp("\\s*```" + lang + "");
 			return stream.sol() && stream.match(re) && stream.eol();
@@ -220,7 +220,7 @@ function generateCodeHighlighter(lang) {
 CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 	return simulModes([
 		multiplexerMode(
- 			CodeMirror.getMode(config, "blue-markdown-styles"),
+ 			CodeMirror.getMode({}, "blue-markdown-styles"),
  			[
 				generateCodeHighlighter('javascript'),
 				generateCodeHighlighter('python'),
