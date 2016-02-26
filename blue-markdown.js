@@ -1,10 +1,3 @@
-
-// next time:
-// try using a blue-code-block mode that takes in "```python\n\n\n```"
-// and highlights it.
-
-// this means using simple-mode's easy meta syntax for nesting modes. +1
-
 var LINK_REGEX = /\[[^\[\]\(\)]+\]\([^\[\]\(\)]+\)/
 
 CodeMirror.defineSimpleMode("blue-markdown-styles", {
@@ -29,6 +22,9 @@ LINK_HREF       = 2;
 LINK_HREF_CLOSE = 1;
 
 function linkHighlightMode() { return {
+	/**
+   * A mode for highlighting [links](linky.com).
+   */
 	startState: function() {
 		return {
 			status: 0
@@ -72,144 +68,156 @@ function linkHighlightMode() { return {
 	}
 }}
 
-/* defaultMode: the default mode
- * innerHighlighters: [
- *  { // Switch into inner mode after isStart and before isEnd.
- *    mode: <mode>,
- *    isStart: <func(stream)>,
- *    isEnd:   <func(stream)>,
- *  }
- * ]
- */
 function multiplexerMode(
 	defaultMode,
 	innerHighlighters
-) { return {
-	startState: function() {
-		return {
-			currentHighlighter: null,
-			currentState: null,
-			defaultState: CodeMirror.startState(defaultMode)
-		};
-	},
-	copyState: function(s) {
-		return {
-			currentHighlighter: s.currentHighlighter,
-			currentState: s.currentState,
-			defaultState: s.defaultState
-		};
-	},
-	token: function(stream, state) {
-		// SWITCH INTO a inner state
-		if (!state.currentHighlighter) {
-			var highlighter = _.find(innerHighlighters, function (innerHighlighter) {
-				return innerHighlighter.isStart(stream);
-			});
+) {
+	/**
+   * This mode lets you switch between a default mode and multiple,
+   * inner modes called 'highlighters.'
+   *
+   * defaultMode: the default mode
+	 * innerHighlighters: [
+	 *  { // Switch into inner mode after isStart and before isEnd.
+	 *    mode: <mode>,
+	 *    isStart: <func(stream)>,
+	 *    isEnd:   <func(stream)>,
+	 *  }
+	 * ]
+	 */
+	return {
+		startState: function() {
+			return {
+				currentHighlighter: null,
+				currentState: null,
+				defaultState: CodeMirror.startState(defaultMode)
+			};
+		},
+		copyState: function(s) {
+			return {
+				currentHighlighter: s.currentHighlighter,
+				currentState: s.currentState,
+				defaultState: s.defaultState
+			};
+		},
+		token: function(stream, state) {
+			// SWITCH INTO a inner state
+			if (!state.currentHighlighter) {
+				var highlighter = _.find(innerHighlighters, function (innerHighlighter) {
+					return innerHighlighter.isStart(stream);
+				});
 
-			if (highlighter) {
-				state.currentHighlighter = highlighter;
-				state.currentState = CodeMirror.startState(highlighter.mode)
-				return state.currentHighlighter.innerStartToken;
+				if (highlighter) {
+					state.currentHighlighter = highlighter;
+					state.currentState = CodeMirror.startState(highlighter.mode)
+					return state.currentHighlighter.innerStartToken;
+				}
 			}
-		}
 
-		// SWITCH OUT of a inner state
-		if (state.currentHighlighter) {
-			if (state.currentHighlighter.isEnd(stream)) {
-				var endToken = state.currentHighlighter.innerEndToken;
-				state.currentHighlighter = null;
-				state.currentState = null;
-				return endToken;
+			// SWITCH OUT of a inner state
+			if (state.currentHighlighter) {
+				if (state.currentHighlighter.isEnd(stream)) {
+					var endToken = state.currentHighlighter.innerEndToken;
+					state.currentHighlighter = null;
+					state.currentState = null;
+					return endToken;
+				}
 			}
-		}
 
-		// STAY in inner state
-		if (state.currentHighlighter) {
-			var token = state.currentHighlighter.mode.token(stream, state.currentState);
-			return token + ' ' + state.currentHighlighter.innerToken;
-		}
+			// STAY in inner state
+			if (state.currentHighlighter) {
+				var token = state.currentHighlighter.mode.token(stream, state.currentState);
+				return token + ' ' + state.currentHighlighter.innerToken;
+			}
 
-		// STAY in outer state
-		return defaultMode.token(stream, state.defaultState);
-	}
-}};
+			// STAY in outer state
+			return defaultMode.token(stream, state.defaultState);
+		}
+	}};
 
 function genZero () {return 0;}
 function genEmpty () {return '';}
 function decrement (x) {return x - 1;}
 
-function simulModes(modes) { return {
-	startState: function () {
-		return {
-			states: _.map(modes, function (mode) {
-				return CodeMirror.startState(mode);
-			}),
-			countdowns: _.map(modes, genZero),
-			tokens: _.map(modes, genEmpty)
-		};
-	},
-	copyState: function(s) {
-		return {
-			states: _.map(modes, function (mode, index) {
-				var state = s.states[index];
-				return mode.copyState(state);
-			}),
-			countdowns: _.clone(s.countdowns),
-			tokens:     _.clone(s.tokens)
-		};
-	},
-	token: function(stream, state) {
-		var returnTokens = '';
+function simulModes(modes) {
+	/**
+   * This mode lets you run multiple modes *at the same time*,
+   * making it ridiculously easier to compose different modes.
+   */
+	return {
+		startState: function () {
+			return {
+				states: _.map(modes, function (mode) {
+					return CodeMirror.startState(mode);
+				}),
+				countdowns: _.map(modes, genZero),
+				tokens: _.map(modes, genEmpty)
+			};
+		},
+		copyState: function(s) {
+			return {
+				states: _.map(modes, function (mode, index) {
+					var state = s.states[index];
+					return mode.copyState(state);
+				}),
+				countdowns: _.clone(s.countdowns),
+				tokens:     _.clone(s.tokens)
+			};
+		},
+		token: function(stream, state) {
+			var returnTokens = '';
 
-		_.each(modes, function (mode, index) {
-			var modeState     = state.states[index];
-			var modeCountdown = state.countdowns[index];
-			var modeToken     = state.tokens[index];
+			_.each(modes, function (mode, index) {
+				var modeState     = state.states[index];
+				var modeCountdown = state.countdowns[index];
+				var modeToken     = state.tokens[index];
+				
+				if (modeCountdown > 0) {
+					// Add the previous token if a countdown is going on.
+					returnTokens += ' ' + state.tokens[index];
+				} else {
+					// Otherwise, feed the stream to the mode.
+					modeToken = mode.token(stream, modeState);
+					modeCountdown = stream.current().length;
+
+					returnTokens += ' ' + modeToken;
+					stream.backUp(modeCountdown);
+				}
+
+				state.states[index]     = modeState;
+				state.countdowns[index] = modeCountdown;
+				state.tokens[index]     = modeToken;
+			});
+
+			// Decrement countdowns
+			state.countdowns = _.map(state.countdowns, decrement);
+
+			// Increment stream by one!
+			stream.next();
 			
-			if (modeCountdown > 0) {
-				// Add the previous token if a countdown is going on.
-				returnTokens += ' ' + state.tokens[index];
-			} else {
-				// Otherwise, feed the stream to the mode.
-				modeToken = mode.token(stream, modeState);
-				modeCountdown = stream.current().length;
-
-				returnTokens += ' ' + modeToken;
-				stream.backUp(modeCountdown);
-			}
-
-			state.states[index]     = modeState;
-			state.countdowns[index] = modeCountdown;
-			state.tokens[index]     = modeToken;
-		});
-
-		// Decrement countdowns
-		state.countdowns = _.map(state.countdowns, decrement);
-
-		// Increment stream by one!
-		stream.next();
-		
-		return returnTokens;
-	}
-}}
-
-CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
-	function generateCodeHighlighter(lang) {
-		return {
-			mode: CodeMirror.getMode(config, lang),
-			isStart: function (stream) {
-				var re = new RegExp("\\s*```" + lang + "");
-				return stream.sol() && stream.match(re) && stream.eol();
-			},
-			isEnd: function (stream) {
-				return stream.sol() && stream.match(/\s*```/) && stream.eol();
-			},
-			innerStartToken: 'line-code line-code-start',
-			innerToken: 'line-code',
-			innerEndToken: 'line-code line-code-end'
+			return returnTokens;
 		}
 	}
+}
 
+function generateCodeHighlighter(lang) {
+	return {
+		mode: CodeMirror.getMode(config, lang),
+		isStart: function (stream) {
+			var re = new RegExp("\\s*```" + lang + "");
+			return stream.sol() && stream.match(re) && stream.eol();
+		},
+		isEnd: function (stream) {
+			return stream.sol() && stream.match(/\s*```/) && stream.eol();
+		},
+		innerStartToken: 'line-code line-code-start',
+		innerToken: 'line-code',
+		innerEndToken: 'line-code line-code-end'
+	}
+}
+
+
+CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 	return simulModes([
 		multiplexerMode(
  			CodeMirror.getMode(config, "blue-markdown-styles"),
