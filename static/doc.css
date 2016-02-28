@@ -1,0 +1,102 @@
+html {
+		height: 100%;
+		box-sizing: border-box;
+}
+*, *:before, *:after {
+		box-sizing: inherit;
+}
+body {
+		margin: 0;
+		height: 100%;
+		position: relative;
+}
+#firepad {
+		width: 100%;
+		max-width: 640px;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 8px;
+		padding-right: 8px;
+		height: 100%;
+}
+
+.CodeMirror {
+		font-family: 'Ubuntu', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif !important;
+		color: #333;
+}
+
+.CodeMirror-line:first-child {
+		margin-top: 32px;
+}
+
+.CodeMirror-line:last-child {
+		margin-bottom: 32px;
+}
+
+.cm-code {
+		font-family: "Roboto Mono", "Lucida Console", monospace
+}
+
+.code.CodeMirror-line {
+		font-family: "Roboto Mono", "Lucida Console", monospace;
+}
+
+.code-start.CodeMirror-line {
+		color: #888;
+		padding-bottom: 0.4em;
+}
+
+.code-end.CodeMirror-line {
+		color: #888;
+		padding-top: 0.4em;
+}
+
+.cm-indent {
+		font-family: "Roboto Mono", "Lucida Console", monospace;
+}
+.cm-tab {
+		display: inherit!important;
+		// fixes bug with inline-none and custom indenting
+}
+.cm-bullet {
+		font-family: "Roboto Mono", "Lucida Console", monospace;
+		color: #5cc;
+}
+
+.cm-meta {
+		color: #5cc !important;
+}
+
+.cm-link-text {
+		color: #5cc !important;
+}
+
+.cm-link-href {
+		color: #5cc !important;
+}
+
+.cm-link-tag {
+		color: #bbb;
+}
+
+.cm-header-tag {
+		color: #bbb;
+}
+
+.cm-code-quoted {
+		font-family: "Droid Sans Mono", "Lucida Console", monospace;
+		color: #888;
+}
+
+.header-1.CodeMirror-line {
+		font-size: 175%;
+}
+.header-2.CodeMirror-line {
+		font-size: 140%
+}
+.header-3.CodeMirror-line {
+		font-size: 120%
+}
+.header-4.CodeMirror-line {
+		font-size: 110%
+}
