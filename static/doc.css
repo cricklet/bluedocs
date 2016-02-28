@@ -12,17 +12,18 @@ body {
 }
 #firepad {
 		width: 100%;
+		height: 100%;
 		max-width: 640px;
 		margin-left: auto;
 		margin-right: auto;
 		padding-left: 8px;
 		padding-right: 8px;
-		height: 100%;
 }
 
 .CodeMirror {
 		font-family: 'Ubuntu', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif !important;
 		color: #333;
+		height: 100%;
 }
 
 .CodeMirror-line:first-child {
