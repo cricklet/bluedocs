@@ -1,4 +1,6 @@
-var LINK_REGEX = /\[[^\[\]\(\)]+\]\([^\[\]\(\)]+\)/
+var LINK_REGEX = /\[[^\[\]\(\)]+\]\([^\[\]\(\)]+\)/;
+var HREF_REGEX = /(https?|ftp):\/\/[^\s/$.?#].[^\s]*/;
+var EMAIL_REGEX = /[^@^\s]+@[^@^\s]+\.[^@^\s]+/;
 
 CodeMirror.defineSimpleMode("blue-markdown-styles", {
 	start: [
@@ -7,9 +9,11 @@ CodeMirror.defineSimpleMode("blue-markdown-styles", {
 		{regex: /### /, token: "header-tag line-header-3", sol: true},
 		{regex: /#### /, token: "header-tag line-header-4", sol: true},
 		{regex: LINK_REGEX, token: ""},
+		{regex: HREF_REGEX, token: "link-href"},
+		{regex: EMAIL_REGEX, token: "email-href"},
 		{regex: /`.*`/, token: "code-quoted"},
 		{regex: /\s+- /, token: "bullet", sol: true},
-		{regex: /\s+[1-9]+\. /, token: "bullet", sol: true},
+		{regex: /\s+[0-9]+\. /, token: "bullet", sol: true},
 		{regex: /\s+/, token: "indent", sol: true}
 	]
 });
@@ -41,7 +45,7 @@ function linkHighlightMode() { return {
 		if (state.status == LINK_TEXT) {
 			stream.match(/[^\[\]\(\)]+/);
 			returnToken += 'link-text';
-			
+
 		} else if (state.status == LINK_HREF) {
 			stream.match(/[^\[\]\(\)]+/);
 			returnToken += 'link-href';
@@ -60,6 +64,50 @@ function linkHighlightMode() { return {
 			// Increment only the first paren;
 			stream.next();
 			returnToken += 'link-tag';
+		}
+
+		state.status --;
+
+		return returnToken;
+	}
+}}
+
+CHECKBOX_INDENT = 4;
+CHECKBOX_OPEN = 3;
+CHECKBOX_VALUE = 2;
+CHECKBOX_CLOSE = 1;
+
+function checkboxHighlighter() { return {
+	/**
+   * A mode for highlighting " - [ ] Checkboxes"
+   */
+	startState: function() {
+		return {
+			status: 0
+		};
+	},
+	copyState: function(s) {
+		return {
+			status: s.status
+		};
+	},
+	token: function(stream, state) {
+		var returnToken = '';
+
+		if (state.status == CHECKBOX_OPEN || state.status == CHECKBOX_CLOSE) {
+			stream.next();
+			returnToken += 'checkbox-tag';
+
+		} else if (state.status == CHECKBOX_VALUE) {
+			stream.match(/[ ?xXoO]/);
+			returnToken += 'checkbox-value';
+
+		} else if(stream.sol() && stream.match(/\s*([0-9]\. |- |)\[[ xXoO\?]\]/)) {
+			stream.backUp(3);
+			state.status = CHECKBOX_INDENT;
+
+		} else {
+			stream.skipToEnd();
 		}
 
 		state.status --;
@@ -171,7 +219,7 @@ function simulModes(modes) {
 				var modeState     = state.states[index];
 				var modeCountdown = state.countdowns[index];
 				var modeToken     = state.tokens[index];
-				
+
 				if (modeCountdown > 0) {
 					// Add the previous token if a countdown is going on.
 					returnTokens += ' ' + state.tokens[index];
@@ -194,7 +242,7 @@ function simulModes(modes) {
 
 			// Increment stream by one!
 			stream.next();
-			
+
 			return returnTokens;
 		}
 	}
@@ -227,6 +275,7 @@ CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 				generateCodeHighlighter('html')
 			]
 		),
-		linkHighlightMode()
+		linkHighlightMode(),
+		checkboxHighlighter()
 	]);
 });

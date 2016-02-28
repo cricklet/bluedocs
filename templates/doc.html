@@ -45,20 +45,19 @@
 		var defaultText =
 		"# Welcome!\n"
      + "\n"
-     + "BlueDocs aims to make you more productive by providing a simple, practical collaborative text editor.\n"
+     + "BlueDocs makes you more productive by providing a simple, practical collaborative text editor.\n"
      + "\n"
-     + "Collaborating on a document is as simple as sharing the url: http://bluedocs.io/docs/" + DOCUMENT_ID + "\n"
+     + "To collaborate, simply share the url: http://bluedocs.io/docs/" + DOCUMENT_ID + "\n"
      + "\n"
-     + "So far, BlueDocs supports:\n"
+     + "Features:\n"
      + " - [x] GitHub-style markdown highlighting.\n"
-     + " - [x] Code highlighting (so far: python, ruby, javascript, and more).\n"
+     + " - [x] Code highlighting: python, ruby, javascript, and more.\n"
+     + " - [x] Collaborative editing. Give a friend the URL and try it!\n"
+     + " - [ ] Folders?\n"
+     + " - [ ] Share settings?\n"
      + "\n"
-     + "In the future, it will support:\n"
-     + " - [ ] User accounts\n"
-     + " - [ ] Folders\n"
-     + " - [ ] Sharing settings\n"
-     + "\n"
-     + "For now, send me a message at \n"
+     + "Send me a message at: bluedocs.dev@gmail.com! "
+		 + "All feedback is welcomed :)\n"
      + "\n"
      + "```python\n"
      + "def compute_greeting(name):\n"
@@ -66,7 +65,7 @@
      + "\n"
      + "print compute_greeting('Friend')\n"
      + "```\n\n";
-		
+
 		var firepadRef = new Firebase(FIREBASE_URL + DOCUMENT_ID);
 		var codeMirror = CodeMirror(
 			document.getElementById('firepad'),

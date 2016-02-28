@@ -22,7 +22,6 @@ body {
 
 .CodeMirror {
 		font-family: 'Ubuntu', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif !important;
-		color: #333;
 		height: 100%;
 }
 
@@ -65,6 +64,20 @@ body {
 }
 
 .cm-meta {
+		color: #5cc !important;
+}
+
+.cm-checkbox-tag {
+		color: #bbb;
+		font-family: "Roboto Mono", "Lucida Console", monospace;
+}
+
+.cm-checkbox-value {
+		color: #5cc !important;
+		font-family: "Roboto Mono", "Lucida Console", monospace;
+}
+
+.cm-email-href {
 		color: #5cc !important;
 }
 
