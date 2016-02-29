@@ -17,11 +17,11 @@
 }
 
 .code-start.CodeMirror-line {
-		color: #888;
+		color: #999;
 }
 
 .code-end.CodeMirror-line {
-		color: #888;
+		color: #999;
 		padding-top: 0.2em;
 }
 
