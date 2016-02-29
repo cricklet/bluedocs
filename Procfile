@@ -1,1 +1,1 @@
-web: gunicorn blue_server:app
+web: gunicorn blue_server:app --log-file -
