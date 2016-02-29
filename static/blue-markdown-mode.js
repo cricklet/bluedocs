@@ -11,10 +11,10 @@ CodeMirror.defineSimpleMode("blue-markdown-styles", {
 		{regex: LINK_REGEX, token: ""},
 		{regex: HREF_REGEX, token: "link-href"},
 		{regex: EMAIL_REGEX, token: "email-href"},
-		{regex: /`.*`/, token: "code-quoted"},
 		{regex: /\s+- /, token: "bullet", sol: true},
 		{regex: /\s+[0-9]+\. /, token: "bullet", sol: true},
-		{regex: /\s+/, token: "indent", sol: true}
+		{regex: /\s+/, token: "indent", sol: true},
+		{regex: /`[^`]*`/, token: "code-quote"}
 	]
 });
 
@@ -115,6 +115,19 @@ function checkboxHighlighter() { return {
 		return returnToken;
 	}
 }}
+
+function tokenMode(token) {
+	return {
+		startState: function() {
+		},
+		copyState: function(s) {
+		},
+		token: function(stream, state) {
+			stream.skipToEnd();
+			return token;
+		}
+	}
+}
 
 function multiplexerMode(
 	defaultMode,
@@ -249,9 +262,9 @@ function simulModes(modes) {
 	}
 }
 
-function generateCodeHighlighter(lang) {
+function generateCodeHighlighter(lang, mode) {
 	return {
-		mode: CodeMirror.getMode({}, lang),
+		mode: mode,
 		isStart: function (stream) {
 			var re = new RegExp("\\s*```" + lang + "");
 			return stream.sol() && stream.match(re) && stream.eol();
@@ -271,9 +284,10 @@ CodeMirror.defineMode("blue-markdown", function(config, parserConfig) {
 		multiplexerMode(
  			CodeMirror.getMode({}, "blue-markdown-styles"),
  			[
-				generateCodeHighlighter('javascript'),
-				generateCodeHighlighter('python'),
-				generateCodeHighlighter('html')
+				generateCodeHighlighter('javascript', CodeMirror.getMode({}, 'javascript')),
+				generateCodeHighlighter('python', CodeMirror.getMode({}, 'python')),
+				generateCodeHighlighter('html', CodeMirror.getMode({}, 'html')),
+				generateCodeHighlighter('', tokenMode('line-code-unformatted'))
 			]
 		),
 		linkHighlightMode(),
