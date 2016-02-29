@@ -34,11 +34,11 @@ body {
 }
 
 .cm-code {
-		font-family: "Roboto Mono", "Lucida Console", monospace
+		font-family: "Ubuntu Mono", "Lucida Console", monospace
 }
 
 .code.CodeMirror-line {
-		font-family: "Roboto Mono", "Lucida Console", monospace;
+		font-family: "Ubuntu Mono", "Lucida Console", monospace;
 }
 
 .code-start.CodeMirror-line {
@@ -52,14 +52,14 @@ body {
 }
 
 .cm-indent {
-		font-family: "Roboto Mono", "Lucida Console", monospace;
+		font-family: "Ubuntu Mono", "Lucida Console", monospace;
 }
 .cm-tab {
 		display: inherit!important;
 		// fixes bug with inline-none and custom indenting
 }
 .cm-bullet {
-		font-family: "Roboto Mono", "Lucida Console", monospace;
+		font-family: "Ubuntu Mono", "Lucida Console", monospace;
 		color: #5cc;
 }
 
@@ -69,12 +69,12 @@ body {
 
 .cm-checkbox-tag {
 		color: #bbb;
-		font-family: "Roboto Mono", "Lucida Console", monospace;
+		font-family: "Ubuntu Mono", "Lucida Console", monospace;
 }
 
 .cm-checkbox-value {
 		color: #5cc !important;
-		font-family: "Roboto Mono", "Lucida Console", monospace;
+		font-family: "Ubuntu Mono", "Lucida Console", monospace;
 }
 
 .cm-email-href {

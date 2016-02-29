@@ -43,28 +43,33 @@
 		var FIREBASE_URL = 'https://bluedocs.firebaseio.com/firepads/'
 
 		var defaultText =
-		"# Welcome!\n"
-     + "\n"
-     + "BlueDocs makes you more productive by providing a simple, practical collaborative text editor.\n"
-     + "\n"
-     + "To collaborate, simply share the url: http://bluedocs.io/docs/" + DOCUMENT_ID + "\n"
-     + "\n"
-     + "Features:\n"
-     + " - [x] GitHub-style markdown highlighting.\n"
-     + " - [x] Code highlighting: python, ruby, javascript, and more.\n"
-     + " - [x] Collaborative editing. Give a friend the URL and try it!\n"
-     + " - [ ] Folders?\n"
-     + " - [ ] Share settings?\n"
-     + "\n"
-     + "Send me a message at: bluedocs.dev@gmail.com! "
-		 + "All feedback is welcomed :)\n"
-     + "\n"
-     + "```python\n"
-     + "def compute_greeting(name):\n"
-     + "  return 'Hello, {}!'.format(name)\n"
-     + "\n"
-     + "print compute_greeting('Friend')\n"
-     + "```\n\n";
+			"# Welcome!\n" +
+			"\n" +
+			"BlueDocs makes you more productive by providing a simple, practical collaborative text editor.\n" +
+			"\n" +
+			"To collaborate, simply share the url: http://bluedocs.io/docs/xyz2\n" +
+			"\n" +
+			"Features:\n" +
+			" - [x] Markdown highlighting.\n" +
+			" - [x] Code highlighting: python, ruby, javascript, and more.\n" +
+			" - [x] Collaborative editing.\n" +
+			" - [ ] Folders?\n" +
+			" - [ ] Share settings?\n" +
+			"\n" +
+			"\n" +
+			"```python\n" +
+			"if user.enjoys_blue_docs():\n" +
+			"  user.share(user.friends)\n" +
+			"\n" +
+			"# All feedback is welcome!\n" +
+			"user.email('bluedocs.dev@gmail.com', user.generate_feedback())\n" +
+			"\n" +
+			"# Thanks to the tools that made this project possible!\n" +
+			"developer.thank(code_mirror)\n" +
+			"developer.thank(fire_pad)\n" +
+			"developer.inspired_by(letterspace)\n" +
+			"```\n" +
+			"\n";
 
 		var firepadRef = new Firebase(FIREBASE_URL + DOCUMENT_ID);
 		var codeMirror = CodeMirror(
@@ -96,6 +101,14 @@
 			elt.style.textIndent = "-" + off + "px";
 			elt.style.paddingLeft = (basePadding + off) + "px";
 		});
+
+		// More hacky hacky hacky. Because the font-size & font-family are changed
+		// so dynamically, CodeMirror's character sizing calculations often break.
+		// Refreshing it seems to solve the problem.
+		codeMirror.on("focus", function (codeMirror) {
+			codeMirror.refresh();
+		});
+
 		codeMirror.refresh();
 
 		</script>

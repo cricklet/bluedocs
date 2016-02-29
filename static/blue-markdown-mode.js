@@ -194,6 +194,7 @@ function simulModes(modes) {
    */
 	return {
 		startState: function () {
+			console.log("Starting simulMode");
 			return {
 				states: _.map(modes, function (mode) {
 					return CodeMirror.startState(mode);
