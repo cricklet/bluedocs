@@ -2,28 +2,18 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<!-- Fonts -->
-		<link href='https://fonts.googleapis.com/css?family=Ubuntu:700,400,500|' rel='stylesheet' type='text/css'>
-		<link href='https://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
-
 		<!-- Utilities -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.slim.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.core.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.load.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
-
-		<!-- CodeMirror -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/codemirror.min.css"/>
-
-		<!-- Blue -->
-		<link rel="stylesheet" href="/static/blue-markdown.css" />
 
 		<style>
 		@font-face {
 			font-family: 'Ubuntu Titling';
-			src: url('static/fonts/UbuntuTitling-Bold-webfont.eot');
-			src: url('static/fonts/UbuntuTitling-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-			url('static/fonts/UbuntuTitling-Bold-webfont.woff') format('woff'),
-			url('static/fonts/UbuntuTitling-Bold-webfont.ttf') format('truetype'),
-			url('static/fonts/UbuntuTitling-Bold-webfont.svg#ubuntu_titlingbold') format('svg');
+			src: url('static/fonts/ubuntutitling-bold-webfont.eot');
+			src: url('static/fonts/ubuntutitling-bold-webfont.eot?#iefix') format('embedded-opentype'),
+			url('static/fonts/ubuntutitling-bold-webfont.woff') format('woff'),
+			url('static/fonts/ubuntutitling-bold-webfont.ttf') format('truetype');
 			font-weight: normal;
 			font-style: normal;
 		}
@@ -77,8 +67,8 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
-		.action-new-doc {
-			background-color: #49c;
+		#action-new-doc {
+			background-color: #75a5d0;
 			border: none;
 			color: #fcfcfc;
 			padding: 1rem 2rem;
@@ -86,11 +76,11 @@
 			text-decoration: none;
 			display: inline-block;
 		}
-		.action-new-doc:hover {
-			background-color: #5ad;
+		#action-new-doc:hover {
+			background-color: #59c;
 			cursor: pointer;
 		}
-		.action-new-doc:active {
+		#action-new-doc:active {
 			background-color: #38b;
 			cursor: pointer;
 		}
@@ -167,7 +157,7 @@
 			</div>
 		</div>
 		<div class="action">
-			<div class="action-new-doc">Create Document</div>
+			<div id="action-new-doc">Create Document</div>
 		</div>
 		<div class="doc">
 			<div class="CodeMirror cm-s-default CodeMirror-wrap">
@@ -176,7 +166,12 @@
 		</div>
 
 		<script>
-		$(".action-new-doc").click(function () {
+		head.load(
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/codemirror.min.css',
+			'/static/blue-markdown.css'
+		)
+
+		document.getElementById('action-new-doc').onclick = function () {
 			// Generate a 5 letter document ID
 			var abc = "abcdefghijklmnopqrstuvwxyz";
 			var docId = "";
@@ -186,8 +181,12 @@
 			}
 
 			// Navigate to it!
-			console.log("GOING TO: " + "{{ docs_url }}" + "/" + docId);
 			window.location.href = "{{ docs_url }}" + "/" + docId;
-		});
+		};
+		</script>
+
+		<!-- Fonts -->
+		<link href='https://fonts.googleapis.com/css?family=Ubuntu:400' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
 	</body>
 </html>

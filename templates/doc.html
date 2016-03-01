@@ -1,57 +1,48 @@
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 		<!-- Fonts -->
-		<link href='https://fonts.googleapis.com/css?family=Ubuntu:700,400,500|' rel='stylesheet' type='text/css'>
-		<link href='https://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Ubuntu:400|' rel='stylesheet' type='text/css'>
 
-		<!-- Helpful libraries -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.slim.min.js"></script>
+		<!-- For async loading -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.core.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.load.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
-
-		<!-- Firebase -->
-		<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
-
-		<!-- CodeMirror -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/codemirror.min.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/codemirror.min.css"/>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/addon/mode/overlay.js"></script>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/javascript/javascript.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/python/python.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/markdown/markdown.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/gfm/gfm.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/css/css.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/htmlmixed/htmlmixed.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/jsx/jsx.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/addon/mode/simple.js"></script>
-
-		<!-- Firepad -->
-		<script src="https://cdn.firebase.com/libs/firepad/1.3.0/firepad.js"></script>
-
-		<!-- Blue -->
-		<script src="/static/blue-markdown-mode.js"></script>
-		<link rel="stylesheet" href="/static/blue-markdown.css" />
 
 		<style>
 		html {
-				height: 100%;
-				box-sizing: border-box;
-				background-color: #fefefe;
+			font-family: 'Ubuntu', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+			height: 100%;
+			box-sizing: border-box;
+			background-color: #fefefe;
 		}
 		*, *:before, *:after {
-				box-sizing: inherit;
+			box-sizing: inherit;
 		}
 		body {
-				margin: 0;
-				height: 100%;
-				position: relative;
+			margin: 0;
+			height: 100%;
+			position: relative;
 		}
 
-		.mobile-callout {
+		#mobile-callout {
 			width: 100%;
-			padding: 1rem;
+			padding: 0.5rem;
+			display: none;
+			background-color: #fff5cc;
+			color: #222;
+		}
+
+		.mobile-callout-close {
+			position: absolute;
+			padding: 0.5rem;
+			top: 0;
+			right: 0;
+		}
+
+		.mobile-callout-text {
+			padding-right: 2rem;
 		}
 
 		#firepad {
@@ -64,103 +55,116 @@
 				padding-right: 8px;
 		}
 
-		.CodeMirror {
-				height: 100%;
-				background-color: #fefefe;
-		}
 		.CodeMirror-line:first-child {
-				margin-top: 32px;
+				margin-top: 2rem;
 		}
 		.CodeMirror-line:last-child {
-				margin-bottom: 32px;
+				margin-bottom: 2rem;
+		}
+
+		#loading {
+		  width: 10rem;
+		  height: 10rem;
+		  text-align: center;
+		  position: absolute;
+		  margin-left: -5rem;
+			margin-top: -5rem;
+			left: 50%;
+			top: 50%;
+
+		  font-size: 10px;
+		  text-indent: -9999em;
+		  border-top: 1.5em solid #def;
+		  border-right: 1.5em solid #def;
+		  border-bottom: 1.5em solid #def;
+		  border-left: 1.5em solid #abf;
+		  -webkit-transform: translateZ(0);
+		  -ms-transform: translateZ(0);
+		  transform: translateZ(0);
+		  -webkit-animation: load8 1.1s infinite linear;
+		  animation: load8 1.1s infinite linear;
+		}
+		#loading,
+		#loading:after {
+		  border-radius: 50%;
+		  width: 10em;
+		  height: 10em;
+		}
+		@-webkit-keyframes load8 {
+		  0% {
+		    -webkit-transform: rotate(0deg);
+		    transform: rotate(0deg);
+		  }
+		  100% {
+		    -webkit-transform: rotate(360deg);
+		    transform: rotate(360deg);
+		  }
+		}
+		@keyframes load8 {
+		  0% {
+		    -webkit-transform: rotate(0deg);
+		    transform: rotate(0deg);
+		  }
+		  100% {
+		    -webkit-transform: rotate(360deg);
+		    transform: rotate(360deg);
+		  }
 		}
 		</style>
 	</head>
 
 	<body>
-		<div class="mobile-callout">
-			Unfortunately, BlueDocs doesn't support editing on mobile.
+		<div id="mobile-callout">
+			<div class="mobile-callout-close">X</div>
+			<div class="mobile-callout-text">Editing on mobile doesn't quite work yet. Proceed at your own peril!</div>
 		</div>
 		<div id="firepad"></div>
+		<div id="loading">Loading...</div>
 
-		<!-- JS Entrypoint -->
+		<!-- Load everything asynchronously -->
 		<script>
-		var DOCUMENT_ID = '{{ doc_id  }}';
-		var FIREBASE_URL = 'https://bluedocs.firebaseio.com/firepads/'
+		window.DOCUMENT_ID = '{{ doc_id  }}';
+		window.FIREBASE_URL = 'https://bluedocs.firebaseio.com/firepads/'
 
-		var defaultText =
-			"# Welcome!\n" +
-			"\n" +
-			"BlueDocs makes you more productive by providing a simple, practical collaborative text editor.\n" +
-			"\n" +
-			"To collaborate, simply share the url: http://bluedocs.io/docs/" + DOCUMENT_ID + "\n" +
-			"\n" +
-			"Features:\n" +
-			" - [x] Markdown highlighting.\n" +
-			" - [x] Code highlighting: python, ruby, javascript, and more.\n" +
-			" - [x] Collaborative editing.\n" +
-			" - [ ] Folders?\n" +
-			" - [ ] Share settings?\n" +
-			"\n" +
-			"\n" +
-			"```python\n" +
-			"if user.enjoys_blue_docs():\n" +
-			"  user.share(user.friends)\n" +
-			"\n" +
-			"# All feedback is welcome!\n" +
-			"user.email('bluedocs.dev@gmail.com', user.generate_feedback())\n" +
-			"\n" +
-			"# Thanks to the tools that made this project possible!\n" +
-			"developer.thank(code_mirror)\n" +
-			"developer.thank(fire_pad)\n" +
-			"developer.inspired_by(letterspace)\n" +
-			"```\n" +
-			"\n";
+		head.load(
+			'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js',
 
-		var firepadRef = new Firebase(FIREBASE_URL + DOCUMENT_ID);
-		var codeMirror = CodeMirror(
-			document.getElementById('firepad'),
-			{
-				lineWrapping: true,
-				mode: {
-					name: 'blue-markdown',
-				}
-			}
-		);
-		var firepad = Firepad.fromCodeMirror(
-			firepadRef, codeMirror,	{ defaultText: defaultText }
-		);
+			// firebase
+			'https://cdn.firebase.com/js/client/2.2.4/firebase.js',
 
-		// Hacky hacky hacky. This indents wrapped lines properly.
-		// Taken from: https://codemirror.net/demo/indentwrap.html
-		var charWidth = codeMirror.defaultCharWidth(), basePadding = 0;
-		codeMirror.on("renderLine", function(codeMirror, line, elt) {
-			var text = line.text;
-			var unindentedText = text.trimLeft();
+			// code mirror
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/codemirror.min.js',
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/javascript/javascript.min.js',
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/python/python.min.js',
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/css/css.min.js',
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/htmlmixed/htmlmixed.min.js',
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/mode/jsx/jsx.min.js',
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/addon/mode/simple.min.js',
 
-			var columns = 0;
-			columns += CodeMirror.countColumn(line.text, null, codeMirror.getOption("tabSize"));
-			if (unindentedText.startsWith("- ")) { columns += 2; }
+			// firepad
+			'https://cdn.firebase.com/libs/firepad/1.3.0/firepad.js',
 
-			var off = columns * charWidth;
-			// Remove indent & add padding.
-			elt.style.textIndent = "-" + off + "px";
-			elt.style.paddingLeft = (basePadding + off) + "px";
-		});
+			// blue!
+			'/static/blue-markdown-mode.js',
 
-		// More hacky hacky hacky. Because the font-size & font-family are changed
-		// so dynamically, CodeMirror's character sizing calculations often break.
-		// Refreshing it seems to solve the problem.
-		codeMirror.on("focus", function (codeMirror) {
-			codeMirror.refresh();
-		});
+			// entrypoint
+			'/static/doc.js'
+		)
 
-		codeMirror.refresh();
+		head.load(
+			'https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/codemirror.min.css',
+			'/static/blue-markdown.css'
+		)
 
 		if( /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()) ) {
-			$(".mobile-callout").show();
+			var callout = document.getElementById('mobile-callout');
+			callout.style.display = 'block';
+			callout.onclick = function () {
+				callout.style.display = 'none';
+			};
 		}
-
 		</script>
+		<link href='https://fonts.googleapis.com/css?family=Ubuntu:500|' rel='stylesheet' type='text/css' />
+		<link href='https://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css' />
 	</body>
 </html>

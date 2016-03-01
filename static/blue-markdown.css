@@ -1,5 +1,7 @@
 .CodeMirror {
 	font-family: 'Ubuntu', 'Lucida Sans Unicode', 'Lucida Grande', sans-serif !important;
+	height: 100%;
+	background-color: #fefefe;
 }
 
 .cm-code-quote {
