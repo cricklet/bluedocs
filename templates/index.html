@@ -1,11 +1,14 @@
 <html>
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 		<!-- Fonts -->
 		<link href='https://fonts.googleapis.com/css?family=Ubuntu:700,400,500|' rel='stylesheet' type='text/css'>
 		<link href='https://fonts.googleapis.com/css?family=Ubuntu+Mono' rel='stylesheet' type='text/css'>
 
 		<!-- Utilities -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.slim.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js"></script>
 
 		<!-- CodeMirror -->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.12.0/codemirror.min.css"/>
@@ -41,7 +44,7 @@
 		}
 		.logo {
 			font-family: 'Ubuntu Titling', sans-serif;
-			padding-top: 100px;
+			padding-top: 6rem;
 			text-align: center;
 			font-size: 10em;
 			font-weight: bold;
@@ -58,7 +61,7 @@
 			text-align: center;
 			margin-left: auto;
 			margin-right: auto;
-			padding-top: 40px;
+			padding-top: 2.5rem;
 			line-height: 135%;
 		}
 		.pitch-large {
@@ -68,7 +71,7 @@
 			display: none;
 		}
 		.action {
-			padding-top: 40px;
+			padding-top: 2.5rem;
 			font-size: 1.8em;
 			text-align: center;
 			margin-left: auto;
@@ -78,7 +81,7 @@
 			background-color: #49c;
 			border: none;
 			color: #fcfcfc;
-			padding: 15px 32px;
+			padding: 1rem 2rem;
 			text-align: center;
 			text-decoration: none;
 			display: inline-block;
@@ -92,11 +95,11 @@
 			cursor: pointer;
 		}
 		.doc {
-			padding-top: 80px;
+			padding-top: 5rem;
 			width: 100%;
-			max-width: 640px;
-			padding: 40px;
-			margin-top:80px;
+			max-width: 40rem;
+			padding: 2.5rem;
+			margin-top:5rem;
 			margin-left: auto;
 			margin-right: auto;
 			background-color: #fcfdfe;
@@ -110,9 +113,9 @@
 			height: auto;
 			color: #444;
 		}
-		@media (max-width: 768px) {
+		@media (max-width: 48rem) {
 			.logo {
-				padding-top: 80px;
+				padding-top: 5rem;
 				font-size: 7em !important;
 			}
 			.pitch {
@@ -122,16 +125,16 @@
 				font-size: 1.4em;
 			}
 			.doc {
-				max-width: 480px;
+				max-width: 30rem;
 			}
 		}
-		@media (max-width: 512px) {
+		@media (max-width: 32rem) {
 			.logo {
-				padding-top: 60px;
-				font-size: 5.5em !important;
+				padding-top: 4rem;
+				font-size: 5em !important;
 			}
 			.pitch {
-				font-size: 1.2em;
+				font-size: 1.1em;
 			}
 			.pitch-large {
 				display: none;
@@ -143,7 +146,7 @@
 				font-size: 1.2em;
 			}
 			.doc {
-				max-width: 400px;
+				max-width: 25rem;
 			}
 		}
 		</style>
@@ -152,14 +155,16 @@
 		<div class="logo">
 			<span class="logo-blue">blue</span><span class="logo-docs">docs</span>
 		</div>
-		<div class="pitch pitch-large">
-			Collaborative document editing with unobtrusive<br/>
-			markdown formatting and code highlighting.
-		</div>
-		<div class="pitch pitch-small">
-			Collaborative document editing with<br/>
-			unobtrusive markdown formatting<br/>
-			and code highlighting.
+		<div class="pitch">
+			<div class="pitch-large">
+				Collaborative document editing with unobtrusive<br/>
+				markdown formatting and code highlighting.
+			</div>
+			<div class="pitch-small">
+				Collaborative document editing with<br/>
+				unobtrusive markdown formatting<br/>
+				and code highlighting.
+			</div>
 		</div>
 		<div class="action">
 			<div class="action-new-doc">Create Document</div>
@@ -181,8 +186,8 @@
 			}
 
 			// Navigate to it!
+			console.log("GOING TO: " + "{{ docs_url }}" + "/" + docId);
 			window.location.href = "{{ docs_url }}" + "/" + docId;
 		});
-		</script>
 	</body>
 </html>
