@@ -43,6 +43,14 @@
 		color: #5cc !important;
 }
 
+.cm-italic {
+		font-style: italic;
+}
+
+.cm-bold {
+		font-weight: 500;
+}
+
 .cm-checkbox-tag {
 		color: #bbb;
 		font-family: "Ubuntu Mono", "Lucida Console", monospace;

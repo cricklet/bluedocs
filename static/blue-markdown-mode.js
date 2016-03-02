@@ -8,6 +8,8 @@ CodeMirror.defineSimpleMode("blue-markdown-styles", {
 		{regex: /## /, token: "header-tag line-header-2", sol: true},
 		{regex: /### /, token: "header-tag line-header-3", sol: true},
 		{regex: /#### /, token: "header-tag line-header-4", sol: true},
+		{regex: /\*\*[^\*]*\*\*/, token: "bold"},
+		{regex: /\*[^\*]*\*/, token: "italic"},
 		{regex: LINK_REGEX, token: ""},
 		{regex: HREF_REGEX, token: "link-href"},
 		{regex: EMAIL_REGEX, token: "email-href"},
