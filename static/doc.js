@@ -29,6 +29,15 @@ var defaultText =
 	"\n";
 
 var firepadRef = new Firebase(window.FIREBASE_URL + window.DOCUMENT_ID);
+
+firepadRef.authAnonymously(function(error, authData) {
+	if (error) {
+		console.log("Login Failed!", error);
+	} else {
+		console.log("Authenticated successfully with payload:", authData);
+	}
+});
+
 var codeMirror = CodeMirror(
 	document.getElementById('firepad'),
 	{
