@@ -2,6 +2,7 @@
 *~
 *#
 *.pyc
+static_min/
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
