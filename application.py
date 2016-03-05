@@ -12,31 +12,36 @@ DEBUG = __name__ == "__main__"
 STATIC_FOLDER = 'static'
 SOURCE_FOLDER = 'assets'
 
-# Compile a list of files to minify
-subdir_files_per_directory = [
+# Get a recursive list of (subdir, filename) under the SOURCE_FOLDER
+# i.e. static/blue.js, 'static/font/blue.ttf
+#   => ('static', 'blue.js'), ('static/font', 'blue.ttf')
+walked_files = os.walk(SOURCE_FOLDER)
+subdir_files = sum([
     [(subdir, filename) for filename in files]
-    for subdir, dirs, files in os.walk(STATIC_FOLDER)
+    for subdir, dirs, files in walked_files
+], [])
+
+# Compute a list of minified files to create
+new_subdir_files = [
+    (STATIC_FOLDER + subdir.lstrip(SOURCE_FOLDER), filename)
+    for subdir, filename in subdir_files
 ]
-subdir_files = sum(subdir_files_per_directory, [])
 
-# Minify each!
-for subdir, filename in subdir_files:
-    new_subdir = STATIC_MIN_FOLDER + subdir.lstrip(STATIC_FOLDER)
-
+def minify(subdir, filename, new_subdir, new_filename):
     path = subdir + '/' + filename
-    new_path = new_subdir + '/' + filename
+    new_path = new_subdir + '/' + new_filename
 
     # Make sure the folder exists
     if not os.path.exists(new_subdir):
         os.makedirs(new_subdir)
 
-    if filename.endswith('.js'):
+    if filename.endswith('.js') and not DEBUG:
         # Minify JS
         source = open(path).read()
         source_min = jsmin(source)
         open(new_path, 'w').write(source_min)
 
-    elif filename.endswith('.css'):
+    elif filename.endswith('.css') and not DEBUG:
         # Minify CSS
         source = open(path).read()
         source_min = cssmin(source)
@@ -46,12 +51,13 @@ for subdir, filename in subdir_files:
         # Or just copy
         shutil.copyfile(path, new_path)
 
-static_folder = STATIC_FOLDER if DEBUG else STATIC_MIN_FOLDER
+# Minify each!
+for (subdir, filename), (new_subdir, new_filename) in zip(subdir_files, new_subdir_files):
+    minify(subdir, filename, new_subdir, new_filename)
 
 application = Flask(
     __name__,
-    static_url_path='/static',
-    static_folder=static_folder
+    static_url_path='/static'
 )
 
 @application.route('/')
