@@ -1,8 +1,5 @@
 Flask
-Flask-Compressor
 gunicorn
 cssmin
 jsmin
 lesscss
-pprint
-ipdb
