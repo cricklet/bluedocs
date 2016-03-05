@@ -70,42 +70,75 @@
 			margin-right: auto;
 		}
 		#action-new-doc {
-			background-color: #75a5d0;
 			border: none;
-			color: #fcfcfc;
 			padding: 1rem 2rem;
 			text-align: center;
 			text-decoration: none;
 			display: inline-block;
 		}
-		#action-new-doc:hover {
+		.blue-button {
+			background-color: #75a5d0;
+			color: #fcfcfc;
+		}
+		.blue-button:hover {
 			background-color: #59c;
 			cursor: pointer;
 		}
-		#action-new-doc:active {
+		.blue-button:active {
+			background-color: #38b;
+			cursor: pointer;
+		}
+		.desat-blue-button {
+			background-color: #85b5d0;
+			color: #fcfcfc;
+		}
+		.desat-blue-button:hover {
+			background-color: #59c;
+			cursor: pointer;
+		}
+		.desat-blue-button:active {
 			background-color: #38b;
 			cursor: pointer;
 		}
 		.doc {
-			padding-top: 5rem;
+			padding: 2.5rem;
 			width: 100%;
 			max-width: 40rem;
-			padding: 2.5rem;
 			margin-top:5rem;
 			margin-left: auto;
 			margin-right: auto;
 			background-color: #ebebfc;
-			/*background-color: #fcfdfe;
-			border-style: solid;
-			border-width: 2px;
-			border-color: #8ac;
-			border-bottom-style: none;*/
 		}
 		.doc .CodeMirror {
 			background-color: #ebebfc;
 			height: auto;
 			color: #303045;
 		}
+
+		.doc input.email {
+			background-color: #f0f0fe;
+			border: 1px solid #cbcbec;
+			font-family: inherit;
+			font-size: inherit;
+			padding-left: 0.5rem;
+			height: 2.5em;
+			width: 60%;
+			float: left;
+		}
+
+		.doc input.button {
+			float: left;
+			height: 2.5em;
+			width: 40%;
+			font-family: inherit;
+			font-size: inherit;
+			border: none;
+			color: #fcfcfc;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+		}
+		
 		@media (max-width: 48rem) {
 			.logo {
 				padding-top: 5rem;
@@ -160,11 +193,34 @@
 			</div>
 		</div>
 		<div class="action">
-			<div id="action-new-doc">Create Document</div>
+			<div id="action-new-doc" class="blue-button">Create Document</div>
 		</div>
 		<div class="doc">
 			<div class="CodeMirror cm-s-default CodeMirror-wrap">
-				<div class="CodeMirror-code"><pre class=" header-1 CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-header-tag  "># </span><span class=" cm-null  ">Simple</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" CodeMirror-line " style="text-indent: -9.8125px; padding-left: 9.8125px;"><span style="padding-right: 0.1px;"><span class=" cm-bullet  "> 1. </span><span class=" cm-null  ">It's just a text editor</span></span></pre><pre class=" CodeMirror-line " style="text-indent: -9.8125px; padding-left: 9.8125px;"><span style="padding-right: 0.1px;"><span class=" cm-bullet  "> 2. </span><span class=" cm-null  ">With beautiful formatting</span></span></pre><pre class=" CodeMirror-line " style="text-indent: -9.8125px; padding-left: 9.8125px;"><span style="padding-right: 0.1px;"><span class=" cm-bullet  "> 3. </span><span class=" cm-null  ">And code highlighting</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-null  ">Share a document's URL to collaborate.</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" code code-start CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;">```python</span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-comment  "># All feedback is welcome!</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">user</span><span class=" cm-null  ">.</span><span class=" cm-property  ">email</span><span class=" cm-null  ">(</span><span class=" cm-string  ">'bluedocs.dev@gmail.com'</span><span class=" cm-null  ">, </span><span class=" cm-variable  ">user</span><span class=" cm-null  ">.</span><span class=" cm-property  ">generate_feedback</span><span class=" cm-null  ">())</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-comment  "># Thanks to the tools that made this project possible!</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">developer</span><span class=" cm-null  ">.</span><span class=" cm-property  ">thank</span><span class=" cm-null  ">(</span><span class=" cm-variable  ">code_mirror</span><span class=" cm-null  ">)</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">developer</span><span class=" cm-null  ">.</span><span class=" cm-property  ">thank</span><span class=" cm-null  ">(</span><span class=" cm-variable  ">fire_pad</span><span class=" cm-null  ">)</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">developer</span><span class=" cm-null  ">.</span><span class=" cm-property  ">inspired_by</span><span class=" cm-null  ">(</span><span class=" cm-variable  ">letterspace</span><span class=" cm-null  ">)</span></span></pre><pre class=" code code-end CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;">```</span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre></div>
+				<div class="CodeMirror-code"><pre class=" header-1 CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-header-tag  "># </span><span class=" cm-null  ">Simple</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" CodeMirror-line " style="text-indent: -9.8125px; padding-left: 9.8125px;"><span style="padding-right: 0.1px;"><span class=" cm-bullet  "> 1. </span><span class=" cm-null  ">It's just a text editor</span></span></pre><pre class=" CodeMirror-line " style="text-indent: -9.8125px; padding-left: 9.8125px;"><span style="padding-right: 0.1px;"><span class=" cm-bullet  "> 2. </span><span class=" cm-null  ">With beautiful formatting</span></span></pre><pre class=" CodeMirror-line " style="text-indent: -9.8125px; padding-left: 9.8125px;"><span style="padding-right: 0.1px;"><span class=" cm-bullet  "> 3. </span><span class=" cm-null  ">And code highlighting</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-null  ">Share a document's URL to collaborate.</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" code code-start CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;">```python</span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-comment  "># All feedback is welcome!</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">user</span><span class=" cm-null  ">.</span><span class=" cm-property  ">email</span><span class=" cm-null  ">(</span><span class=" cm-string  ">'bluedocs.dev@gmail.com'</span><span class=" cm-null  ">, </span><span class=" cm-variable  ">user</span><span class=" cm-null  ">.</span><span class=" cm-property  ">generate_feedback</span><span class=" cm-null  ">())</span></span></pre><pre class=" CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span cm-text="">&#8203;</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-comment  "># Thanks to the tools that made this project possible!</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">developer</span><span class=" cm-null  ">.</span><span class=" cm-property  ">thank</span><span class=" cm-null  ">(</span><span class=" cm-variable  ">code_mirror</span><span class=" cm-null  ">)</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">developer</span><span class=" cm-null  ">.</span><span class=" cm-property  ">thank</span><span class=" cm-null  ">(</span><span class=" cm-variable  ">fire_pad</span><span class=" cm-null  ">)</span></span></pre><pre class=" code CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;"><span class=" cm-variable  ">developer</span><span class=" cm-null  ">.</span><span class=" cm-property  ">inspired_by</span><span class=" cm-null  ">(</span><span class=" cm-variable  ">letterspace</span><span class=" cm-null  ">)</span></span></pre><pre class=" code code-end CodeMirror-line " style="text-indent: 0px; padding-left: 0px;"><span style="padding-right: 0.1px;">```</span></pre>
+
+					<!--</div>-->
+
+					<!-- Begin MailChimp Signup Form -->
+					<div id="mc_embed_signup">
+						<form action="//github.us12.list-manage.com/subscribe/post?u=44ccab152ff60b90658d7d555&amp;id=6959d1611e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+							<div id="mc_embed_signup_scroll">
+
+								<div class="mc-field-group">
+									<input type="email" value="" placeholder="email@email.com" name="EMAIL" class="required email" id="mce-EMAIL">
+								</div>
+								<div id="mce-responses" class="clear">
+									<div class="response" id="mce-error-response" style="display:none"></div>
+									<div class="response" id="mce-success-response" style="display:none"></div>
+								</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+								<div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_44ccab152ff60b90658d7d555_6959d1611e" tabindex="-1" value=""></div>
+								<input type="submit" value="Get Updates" name="subscribe" id="mc-embedded-subscribe" class="button desat-blue-button"></div>
+							</div>
+						</form>
+					</div>
+					<!--End mc_embed_signup-->
+					
+				</div>
 			</div>
 		</div>
 
