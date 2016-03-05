@@ -10,7 +10,7 @@ from pprint import pprint as pp
 
 DEBUG = __name__ == "__main__"
 STATIC_FOLDER = 'static'
-STATIC_MIN_FOLDER = 'static_min'
+SOURCE_FOLDER = 'assets'
 
 # Compile a list of files to minify
 subdir_files_per_directory = [
